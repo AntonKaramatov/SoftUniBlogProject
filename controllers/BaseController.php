@@ -43,6 +43,7 @@ abstract class BaseController {
 
 			if(!$isPartial) {
 				include_once("views/layouts/" . $this->layout . "/header.php");
+				include_once("views/layouts/messages.php");
 			}
 
 			include_once("views/" . $this->controller . "/" . $viewName . ".php");
@@ -109,4 +110,8 @@ abstract class BaseController {
 			die("Administrator account is required");
 		}
 	}
+
+	protected function isPost() {
+        return $_SERVER['REQUEST_METHOD'] == 'POST';
+    }
 }
