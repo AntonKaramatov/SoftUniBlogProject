@@ -1,1 +1,4 @@
-<h1>Footer</h1>
+    <footer>(c) 2015 Softuni Blog System</footer>
+</body>
+
+</html>

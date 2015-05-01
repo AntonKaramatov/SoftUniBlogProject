@@ -43,7 +43,6 @@ abstract class BaseController {
 
 			if(!$isPartial) {
 				include_once("views/layouts/" . $this->layout . "/header.php");
-				include_once("views/layouts/messages.php");
 			}
 
 			include_once("views/" . $this->controller . "/" . $viewName . ".php");

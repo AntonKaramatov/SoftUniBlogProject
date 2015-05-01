@@ -2,7 +2,7 @@
 
 class UsersModel extends BaseModel {
 	public function login($username, $password) {
-		$statement = self::$db->prepare("SELECT id, username, password_hash, isAdmin, isOwner FROM users WHERE username = ?");
+		$statement = self::$db->prepare("SELECT id, username, password_hash, isAdmin FROM users WHERE username = ?");
 		$statement->bind_param("s", $username);
 		$statement->execute();
 		$result = $statement->get_result()->fetch_assoc();
@@ -13,8 +13,7 @@ class UsersModel extends BaseModel {
 
 		$_SESSION["userId"] = $result["id"];
 		$_SESSION["username"] = $username;
-		$_SESSION["isAdmin"] = $result["isAdmin"];		
-		$_SESSION["isOwner"] = $result["isOwner"];
+		$_SESSION["isAdmin"] = $result["isAdmin"];
 		return null;
 	}
 

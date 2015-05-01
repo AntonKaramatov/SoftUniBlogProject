@@ -8,6 +8,11 @@ class UsersController extends BaseController {
 		$this->usersModel = new UsersModel();
 	}
 
+	public function logout() {
+		unset($_SESSION["username"]);
+		$this->redirectToUrl("/");
+	}
+
 	public function register() {
 		if($this->isPost()) {
 			$this->username = $_POST["username"];
