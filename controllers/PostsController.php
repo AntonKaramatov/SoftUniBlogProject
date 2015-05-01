@@ -2,10 +2,12 @@
 
 class PostsController extends BaseController {
 	private $postsModel;
+	private $commentsModel;
 
 	protected function onInit() {
 		$this->title = "Posts controller";
 		$this->postsModel = new PostsModel();
+		$this->commentsModel = new CommentsModel();
 	}
 
 	public function index() {

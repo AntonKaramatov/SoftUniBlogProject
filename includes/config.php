@@ -18,4 +18,7 @@ define('USERNAME_MAX_LENGTH', 24);
 define('PASSWORD_MIN_LENGTH', 8);
 define('PASSWORD_MAX_LENGTH', 24);
 
+define('COMMENT_MAX_LENGTH', 1000);
+define('COMMENT_MIN_LENGTH', 1);
+
 define('DEFAULT_PAGE_SIZE', 5);

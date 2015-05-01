@@ -10,6 +10,8 @@ class UsersController extends BaseController {
 
 	public function logout() {
 		unset($_SESSION["username"]);
+		unset($_SESSION["userId"]);
+		unset($_SESSION["isAdmin"]);
 		$this->redirectToUrl("/");
 	}
 
