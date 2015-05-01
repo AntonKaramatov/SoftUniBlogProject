@@ -13,7 +13,7 @@ abstract class BaseController {
 		$this->onInit();
 	}
 
-	public function __get($name) {
+	public function &__get($name) {
 		if(isset($this->viewBag[$name])) {
 			return $this->viewBag[$name];
 		}
@@ -21,8 +21,8 @@ abstract class BaseController {
 		if(property_exists($this, $name)) {
 			return $this->$name;
 		}
-
-		return null;
+		$null = null;
+		return $null;
 	}	
 
 	public function __set($name, $value) {
@@ -43,6 +43,8 @@ abstract class BaseController {
 
 			if(!$isPartial) {
 				include_once("views/layouts/" . $this->layout . "/header.php");
+				include_once("views/layouts/" . $this->layout . "/popularSidebar.php");				
+				include_once("views/layouts/" . $this->layout . "/recentSidebar.php");
 			}
 
 			include_once("views/" . $this->controller . "/" . $viewName . ".php");
@@ -95,7 +97,7 @@ abstract class BaseController {
 	}
 
 	protected function isAdmin() {
-		return isset($_SESSION["isAdmin"]);
+		return isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] == 1;
 	}
 
 	protected function authorize() {

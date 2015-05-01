@@ -34,7 +34,7 @@ class CommentsModel extends BaseModel {
 			return $emailValidationError;
 		}
 
-		$date = date('Y-m-d H:i:s');
+		$date = $this->getDate();
 		$name .= "(guest)";
 
 		$statement = self::$db->prepare(
@@ -57,7 +57,7 @@ class CommentsModel extends BaseModel {
 			return $contentValidationError;
 		}
 
-		$date = date('Y-m-d H:i:s');
+		$date = $this->getDate();
 		$statement = self::$db->prepare(
 			"INSERT INTO user_comments (content, date_created, author_id, post_id)
 			VALUES (?, ?, ?, ?)");

@@ -13,4 +13,8 @@ abstract class BaseModel {
 			self::$db->set_charset("utf8");
 		}
 	}
+
+	protected function getDate() {
+		return date('Y-m-d H:i:s');
+	}
 }

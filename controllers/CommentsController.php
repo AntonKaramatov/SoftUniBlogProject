@@ -13,9 +13,8 @@ class CommentsController extends BaseController{
 		$this->renderView("comments", true);
 	}
 
-	public function post(){
-		if($this->isPost()) {
-			$id = $_POST["postId"];
+	public function post($id){
+		if($this->isPost()) { 
 			$commentText = $_POST["comment_text"];
 			if($this->isLoggedIn()) {	
 				$result = $this->commentsModel->postUserComment($id, $commentText);

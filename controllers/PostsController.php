@@ -2,12 +2,10 @@
 
 class PostsController extends BaseController {
 	private $postsModel;
-	private $commentsModel;
 
 	protected function onInit() {
 		$this->title = "Posts controller";
 		$this->postsModel = new PostsModel();
-		$this->commentsModel = new CommentsModel();
 	}
 
 	public function index() {
@@ -21,6 +19,61 @@ class PostsController extends BaseController {
 			$this->addErrorMessage("Post not found.");
 			$this->redirectToUrl("/posts");
 		}
+		$this->postsModel->increaseViews($id);
+		$this->renderView();
+	}
+
+	public function recent() {
+		$this->posts = $this->postsModel->getRecentPostTitles();
+		$this->renderView("postTitleList", true);
+	}
+
+	public function popular() {
+		$this->posts = $this->postsModel->getPopularPostTitles();
+		$this->renderView("postTitleList", true);
+	}
+
+	public function create() {
+		$this->authorizeAdmin();
+		if($this->isPost()) {
+			$this->postTitle = trim($_POST["title"]);			
+			$this->postContent = trim($_POST["content"]);
+			$result = $this->postsModel->post($this->postTitle, $this->postContent);
+			if($result != null) {
+				$this->addErrorMessage($result);
+			}
+			else {
+				$this->addInfoMessage("Post created successfully.");
+				$this->redirectToUrl("/posts");
+			}
+		}
+		$this->renderView();
+	}
+
+	public function edit($id) {
+		$this->authorizeAdmin();
+		if(!$this->isPost()) {
+			$this->post = $this->postsModel->getPostById($id);
+			if($this->post == null) {
+				$this->addErrorMessage("Post not found.");
+				$this->redirectToUrl("/posts");
+			}
+		}
+		else {
+			$this->post = array();
+			$this->post["id"] = $id;
+			$this->post["title"] = trim($_POST["title"]);			
+			$this->post["content"] = trim($_POST["content"]);
+			$result = $this->postsModel->edit($id, $this->post["title"], $this->post["content"]);
+			if($result != null) {
+				$this->addErrorMessage($result);
+			}
+			else {
+				$this->addInfoMessage("Post edited successfully.");
+				$this->redirectToUrl("/posts");
+			}
+		}
+
 		$this->renderView();
 	}
 }

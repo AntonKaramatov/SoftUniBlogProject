@@ -1,6 +1,5 @@
 <div>
-	<form action="/comments/post" method="POST">
-		<input type="hidden" value="<?=$this->post['id']?>" name="postId">
+	<form action="/comments/post/<?=$this->post['id']?>" method="POST">
 		<?php if(!$this->isLoggedIn()):?>
 			Name: <input type="text" name="guest_name"><br/>
 			Email: <input type="text" name="guest_email"><br/>

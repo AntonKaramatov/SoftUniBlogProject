@@ -6,7 +6,10 @@
         <div>
         	<?= htmlspecialchars($post['preview']) . "..." ?>
         </div>
-        Visits: <?= htmlspecialchars($post['visits_count']) ?>
+        Visits: <?= htmlspecialchars($post['visits_count']) ?><br/>
+        <?php if($this->isAdmin()) :?>
+            <a href="/posts/edit/<?=$post['id']?>">Edit Post</a>
+            <a href="/posts/delete/<?=$post['id']?>">Delete Post</a>
+        <?php endif;?>
     </div>
-    <br/>
 <?php endforeach ?>
