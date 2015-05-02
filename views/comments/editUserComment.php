@@ -1,7 +1,12 @@
 <div>
+<label for="inputContent" class="control-label">Edit comment:</label>
 	<form action="/comments/editUserComment/<?=$this->comment['id']?>" method="POST">
-		<textarea name="content"><?=htmlspecialchars($this->comment['content'])?></textarea><br/>
-		<input type="submit" value="Edit">
+		<div class="form-group">
+	      	<textarea name="content" id="inputContent" class="form-control" placeholder="Content"><?=htmlspecialchars($this->comment['content'])?></textarea>
+	  	</div>		
+	  	<div class="form-group">
+			<input class="btn btn-lg btn-warning" type="submit" value="Edit">
+		</div>	
 	</form>
 </div>
 

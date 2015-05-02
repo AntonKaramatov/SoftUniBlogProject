@@ -4,7 +4,6 @@ class TagsController extends BaseController {
 	private $tagsModel;
 
 	protected function onInit() {
-		$this->title = "Tags controller";
 		$this->tagsModel = new TagsModel();
 	}
 

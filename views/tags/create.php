@@ -1,4 +1,5 @@
 <form action="/tags/create" method="POST">
-	Tag: <input type="text" name="tag" value="<?=htmlspecialchars($this->tag)?>"><br/>
-	<input type="submit" value="Create">
+	Create tag:
+	<input placeholder="Tag" class="form-control" type="text" name="tag" value="<?=htmlspecialchars($this->tag)?>"><br/>
+	<input class="btn btn-lg btn-primary" type="submit" value="Create">
 </form>

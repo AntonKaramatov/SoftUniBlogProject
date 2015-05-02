@@ -80,7 +80,7 @@ class TagsModel extends BaseModel {
 	public function getPopularTags() {
 		$statement = self::$db->prepare("SELECT t.id, t.tag, COUNT(pt.post_id) as count
 			FROM tags AS t LEFT JOIN posts_tags AS pt ON t.id = pt.tag_id 
-			GROUP BY t.id LIMIT 5");
+			GROUP BY t.id ORDER BY count DESC LIMIT 5");
 		$statement->execute();
 		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
 		return $result;

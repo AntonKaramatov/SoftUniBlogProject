@@ -4,7 +4,6 @@ class PostsController extends BaseController {
 	private $postsModel;
 
 	protected function onInit() {
-		$this->title = "Posts controller";
 		$this->postsModel = new PostsModel();
 	}
 

@@ -1,7 +1,9 @@
-<div>
+<div class="pager">
+<ul>
 <?php for($i = 1; $i <= $this->pagesCount; $i++): ?>
-<a href="<?=htmlspecialchars($this->requestUrl)?>?page=<?=$i?>">
-<?=$i?>
-</a>
+	<li><a href="<?=htmlspecialchars($this->requestUrl)?>?page=<?=$i?>">
+		<?=$i?>
+	</a></li>
 <?php endfor;?>
+</ul>
 </div>

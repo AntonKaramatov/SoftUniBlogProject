@@ -4,7 +4,6 @@ class CommentsController extends BaseController{
 	private $commentsModel;
 
 	protected function onInit() {
-		$this->title = "Comments controller";
 		$this->commentsModel = new CommentsModel();
 	}
 

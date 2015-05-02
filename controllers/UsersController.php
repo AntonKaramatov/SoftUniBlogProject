@@ -4,7 +4,6 @@ class UsersController extends BaseController {
 	private $usersModel;
 
 	protected function onInit() {
-		$this->title = "Users controller";
 		$this->usersModel = new UsersModel();
 	}
 
