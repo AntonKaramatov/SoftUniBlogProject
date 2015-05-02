@@ -16,7 +16,9 @@
             <?php endif;?>
             <?php if($this->isAdmin()):?>
                 <li><a href="/posts/create">Create Post</a></li>
+                <li><a href="/tags/create">Create Tag</a></li>
                 <li><a href="/comments">View Comments</a></li>
+                <li><a href="/tags">View Tags</a></li>
                 <li><a href="/users">View Users</a></li>
             <?php endif;?>
         </ul>
@@ -26,3 +28,6 @@
         <?php endif; ?>
     </header>
     <?php include_once('views/layouts/messages.php'); ?>
+    <?php include_once('views/layouts/popularPostsSidebar.php'); ?>
+    <?php include_once('views/layouts/recentPostsSidebar.php'); ?>
+    <?php include_once('views/layouts/popularTagsSidebar.php'); ?>

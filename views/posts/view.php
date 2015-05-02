@@ -4,7 +4,11 @@
 	Author: <?= htmlspecialchars($this->post["username"])?>
 	<p><?= htmlspecialchars($this->post["content"])?></p>
 	<input id="postId" type="hidden" value="<?=$this->post['id']?>">
-</div>
+	<?php if($this->isAdmin()) :?>
+        <a href="/posts/edit/<?=$this->post['id']?>">Edit Post</a>
+        <a href="/posts/delete/<?=$this->post['id']?>">Delete Post</a>
+    <?php endif;?>
+</div><br/>
 
 <?php include_once("views/comments/post.php");?>
 

@@ -23,6 +23,11 @@ class PostsController extends BaseController {
 		$this->renderView();
 	}
 
+	public function getByTag($id) {
+		$this->posts = $this->postsModel->getPostsWithPreviewByTagId($id);
+		$this->renderView("index");
+	}
+
 	public function recent() {
 		$this->posts = $this->postsModel->getRecentPostTitles();
 		$this->renderView("postTitleList", true);
@@ -75,5 +80,43 @@ class PostsController extends BaseController {
 		}
 
 		$this->renderView();
+	}
+
+	public function delete($id) {
+		$this->authorizeAdmin();
+		$result = $this->postsModel->delete($id);
+		if($result) {
+			$this->addInfoMessage("Post deleted successfully.");
+		}
+		else {
+			$this->addErrorMessage("Failed to delete post.");
+		}
+		$this->redirectToUrl("/posts");
+	}
+
+	public function addTag($postId, $tagId) {
+		$this->authorizeAdmin();
+		$result = $this->postsModel->addTagToPost($postId, $tagId);
+		if($result != null) {
+			$this->addErrorMessage($result);
+		}
+		else {			
+			$this->addInfoMessage("Tag added successfully.");
+		}
+
+		$this->redirect("posts", "edit", [$postId]);
+	}
+
+	public function removeTag($postId, $tagId) {
+		$this->authorizeAdmin();
+		$result = $this->postsModel->removeTagFromPost($postId, $tagId);
+		if($result != null) {
+			$this->addErrorMessage($result);
+		}
+		else {			
+			$this->addInfoMessage("Tag removed successfully.");
+		}
+
+		$this->redirect("posts", "edit", [$postId]);
 	}
 }
