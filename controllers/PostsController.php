@@ -89,7 +89,7 @@ class PostsController extends BaseController {
 			$this->addInfoMessage("Post deleted successfully.");
 		}
 		else {
-			$this->addErrorMessage("Failed to delete post.");
+			$this->addErrorMessage("Post not found.");
 		}
 		$this->redirectToUrl("/posts");
 	}

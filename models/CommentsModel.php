@@ -3,11 +3,32 @@
 class CommentsModel extends BaseModel {
 	public function getCommentsByPostId($id) {
 		$statement = self::$db->prepare(
-			"(SELECT c.id, c.content, c.date_created, u.username 
-			FROM user_comments AS c INNER JOIN users AS u ON c.author_id = u.id WHERE c.post_id = ?)
-			UNION (SELECT id, content, date_created, username FROM guest_comments WHERE post_id = ?)
+			"(SELECT c.id, c.content, c.date_created, u.username, 1 as type
+			FROM user_comments AS c 
+			JOIN users AS u ON c.author_id = u.id 
+			WHERE c.post_id = ?)
+			UNION 
+			(SELECT id, content, date_created, username, 0 as type
+			 FROM guest_comments 
+			 WHERE post_id = ?)			
 			ORDER BY date_created DESC");
 		$statement->bind_param("ii", $id, $id);
+		$statement->execute();
+		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		return $result;
+	}
+
+	public function getAllComments($page = 1, $pageSize = DEFAULT_PAGE_SIZE) {
+		$page--;
+		$statement = self::$db->prepare(
+			"(SELECT c.id, c.content, c.date_created, u.username, 1 as type
+			FROM user_comments AS c 
+			JOIN users AS u ON c.author_id = u.id )
+			UNION 
+			(SELECT id, content, date_created, username, 0 as type
+			 FROM guest_comments )			
+			ORDER BY date_created DESC LIMIT ?, ?");
+		$statement->bind_param("ii", $page, $pageSize);
 		$statement->execute();
 		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
 		return $result;
@@ -35,7 +56,6 @@ class CommentsModel extends BaseModel {
 		}
 
 		$date = $this->getDate();
-		$name .= "(guest)";
 
 		$statement = self::$db->prepare(
 			"INSERT INTO guest_comments (content, date_created, username, email, post_id)
@@ -67,13 +87,110 @@ class CommentsModel extends BaseModel {
 		return null;
 	}
 
+	public function getUserCommentById($id) {
+		$statement = self::$db->prepare(
+			"SELECT id, content 
+			FROM user_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();
+		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		if(count($result) < 1) {
+			return null;
+		}
+
+		return $result[0];
+	}
+
+	public function getGuestCommentById($id) {
+		$statement = self::$db->prepare(
+			"SELECT id, username, email, content
+			FROM guest_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();
+		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		if(count($result) < 1) {
+			return null;
+		}
+
+		return $result[0];
+	}
+
+	public function editUserComment($id, $content) {
+		$contentValidationError = $this->validateContent($content);
+		if($contentValidationError != null) {
+			return $contentValidationError;
+		}
+
+		$statement = self::$db->prepare("SELECT COUNT(id) FROM user_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();		
+		$result = $statement->get_result()->fetch_assoc();
+		if($result["COUNT(id)"] == 0) {
+			return "Comment not found.";
+		}
+
+		$statement = self::$db->prepare("UPDATE user_comments SET content = ? WHERE id = ?");
+		$statement->bind_param("si", $content, $id);
+		$statement->execute();
+
+		return null;
+	}
+
+
+	public function editGuestComment($id, $username, $email, $content) {
+		$contentValidationError = $this->validateContent($content);
+		if($contentValidationError != null) {
+			return $contentValidationError;
+		}
+
+		$usernameValidationError = $this->validateUserName($username);
+		if($usernameValidationError != null) {
+			return $usernameValidationError;
+		}
+
+		$emailValidationError = $this->validateEmail($email);
+		if($emailValidationError != NULL) {
+			return $emailValidationError;
+		}
+
+		$statement = self::$db->prepare("SELECT COUNT(id) FROM guest_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();		
+		$result = $statement->get_result()->fetch_assoc();
+		if($result["COUNT(id)"] == 0) {
+			return "Comment not found.";
+		}
+
+		$statement = self::$db->prepare("UPDATE guest_comments
+			SET username = ?, email = ?, content = ? 
+			WHERE id = ?");
+		$statement->bind_param("sssi", $username, $email, $content, $id);
+		$statement->execute();
+
+		return null;
+	}
+
+	public function deleteUserComment($id) {
+		$statement = self::$db->prepare("DELETE FROM user_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();		
+        return $statement->affected_rows > 0;
+	}
+
+	public function deleteGuestComment($id) {
+		$statement = self::$db->prepare("DELETE FROM guest_comments WHERE id = ?");
+		$statement->bind_param("i", $id);
+		$statement->execute();		
+        return $statement->affected_rows > 0;
+	}
+
 	private function validatePostId($id) {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM posts WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
 		$result = $statement->get_result()->fetch_assoc();
 		if($result["COUNT(id)"] == 0) {
-			return "Post does not exist.";
+			return "Post not found.";
 		}
 
 		return null;

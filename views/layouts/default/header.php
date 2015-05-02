@@ -19,7 +19,6 @@
                 <li><a href="/tags/create">Create Tag</a></li>
                 <li><a href="/comments">View Comments</a></li>
                 <li><a href="/tags">View Tags</a></li>
-                <li><a href="/users">View Users</a></li>
             <?php endif;?>
         </ul>
         <?php if(isset($_SESSION["username"])): ?>

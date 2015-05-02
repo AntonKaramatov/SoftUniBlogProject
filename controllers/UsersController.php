@@ -8,14 +8,20 @@ class UsersController extends BaseController {
 		$this->usersModel = new UsersModel();
 	}
 
+	public function index() {
+		$this->redirect("users", "login");
+	}
+
 	public function logout() {
-		unset($_SESSION["username"]);
-		unset($_SESSION["userId"]);
-		unset($_SESSION["isAdmin"]);
+		$this->usersModel->logout();
 		$this->redirectToUrl("/");
 	}
 
 	public function register() {
+		if($this->isLoggedIn()) {
+			$this->redirectToUrl("/");
+		}
+
 		if($this->isPost()) {
 			$this->username = $_POST["username"];
 			$this->password = $_POST["password"];
@@ -35,6 +41,10 @@ class UsersController extends BaseController {
 	}
 
 	public function login() {
+		if($this->isLoggedIn()) {
+			$this->redirectToUrl("/");
+		}
+
 		if($this->isPost()) {
 			$username = $_POST["username"];
 			$password = $_POST["password"];

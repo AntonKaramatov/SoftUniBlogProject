@@ -17,6 +17,12 @@ class UsersModel extends BaseModel {
 		return null;
 	}
 
+	public function logout() {
+		unset($_SESSION["username"]);
+		unset($_SESSION["userId"]);
+		unset($_SESSION["isAdmin"]);
+	}
+
 	public function register($username, $password, $repeatPassword, $email) {
 		$usernameValidationError = $this->validateUserName($username);
 		if($usernameValidationError != null) {

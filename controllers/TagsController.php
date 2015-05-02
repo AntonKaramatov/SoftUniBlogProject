@@ -55,7 +55,7 @@ class TagsController extends BaseController {
 			$this->addInfoMessage("Tag deleted successfully.");
 		}
 		else {
-			$this->addErrorMessage("Failed to delete tag.");
+			$this->addErrorMessage("Tag not found.");
 		}
 		$this->redirectToUrl("/tags");
 	}
