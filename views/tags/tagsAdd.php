@@ -3,3 +3,4 @@ All tags: <br/>
 	<a href="/posts/getByTag/<?=$tag['id']?>"><?=htmlspecialchars($tag['tag'])?></a>
 	<a href="/posts/addTag/<?=htmlspecialchars($this->postId)?>/<?=$tag['id']?>">[Add to post]</a> <br/>
 <?php endforeach; ?>
+<?php include_once("views/layouts/pagination.php");?>

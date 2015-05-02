@@ -26,9 +26,27 @@ class TagsModel extends BaseModel {
 		return $result;
 	}
 
-	public function getAllTagsNotOnPost($id) {
+	public function getAllTagsNotOnPost($id, $page, $pageSize = DEFAULT_PAGE_SIZE) {
+		$page--;
+		$offset = $page * $pageSize;
 		$statement = self::$db->prepare(
 			"SELECT t.id, t.tag 
+			FROM tags AS t
+			WHERE t.id NOT IN 
+				(SELECT ti.id FROM tags AS ti 
+			    JOIN posts_tags AS pt 
+			    ON pt.tag_id = ti.id 
+				WHERE pt.post_id = ?)
+			LIMIT ?, ?");
+		$statement->bind_param("iii", $id, $offset, $pageSize);
+		$statement->execute();
+		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		return $result;
+	}
+
+	public function getTagsByPostIdPageCount($id, $pageSize = DEFAULT_PAGE_SIZE) {
+		$statement = self::$db->prepare(
+			"SELECT COUNT(t.id)
 			FROM tags AS t
 			WHERE t.id NOT IN 
 				(SELECT ti.id FROM tags AS ti 
@@ -37,19 +55,26 @@ class TagsModel extends BaseModel {
 				WHERE pt.post_id = ?)");
 		$statement->bind_param("i", $id);
 		$statement->execute();
+		$result = $statement->get_result()->fetch_assoc()["COUNT(t.id)"];
+		return ceil($result / $pageSize);
+	}
+
+	public function getTags($page, $pageSize = DEFAULT_PAGE_SIZE) {
+		$page--;
+		$offset = $page * $pageSize;
+		$statement = self::$db->prepare(
+			"SELECT id, tag 
+			FROM tags LIMIT ?, ?");
+		$statement->bind_param("ii", $offset, $pageSize);
+		$statement->execute();
 		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
 		return $result;
 	}
 
-	public function getTags($page = 1, $pageSize = DEFAULT_PAGE_SIZE) {
-		$page--;
-		$statement = self::$db->prepare(
-			"SELECT id, tag 
-			FROM tags LIMIT ?, ?");
-		$statement->bind_param("ii", $page, $pageSize);
-		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
-		return $result;
+	public function getTagsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
+		$statement = self::$db->query("SELECT COUNT(id) FROM tags");
+        $result = $statement->fetch_assoc()["COUNT(id)"];
+        return ceil($result / $pageSize);
 	}
 
 	public function getPopularTags() {

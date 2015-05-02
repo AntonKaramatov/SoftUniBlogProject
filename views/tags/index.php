@@ -7,3 +7,4 @@ All tags:<br/>
 	    <br/>
 	<?php endforeach ?>
 </div>
+<?php include_once("views/layouts/pagination.php");?>

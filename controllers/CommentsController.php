@@ -9,12 +9,26 @@ class CommentsController extends BaseController{
 	}
 
 	public function get($id) {
-		$this->comments = $this->commentsModel->getCommentsByPostId($id);
+		$this->page = 1;
+		$this->requestUrl = "/posts/view/" . $id;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->commentsModel->getCommentsByPostIdPageCount($id);
+		$this->comments = $this->commentsModel->getCommentsByPostId($id, $this->page);
 		$this->renderView("comments", true);
 	}
 
 	public function index() {
-		$this->comments = $this->commentsModel->getAllComments();
+		$this->page = 1;
+		$this->requestUrl = "/comments";
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->commentsModel->getAllCommentsPageCount();
+		$this->comments = $this->commentsModel->getAllComments($this->page);
 		$this->renderView("comments");
 	}
 

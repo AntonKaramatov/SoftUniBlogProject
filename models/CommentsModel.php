@@ -1,37 +1,65 @@
 <?php
 
 class CommentsModel extends BaseModel {
-	public function getCommentsByPostId($id) {
+	public function getCommentsByPostId($id, $page, $pageSize = DEFAULT_PAGE_SIZE) {
+		$page--;
+		$offset = $page * $pageSize;
 		$statement = self::$db->prepare(
 			"(SELECT c.id, c.content, c.date_created, u.username, 1 as type
 			FROM user_comments AS c 
 			JOIN users AS u ON c.author_id = u.id 
 			WHERE c.post_id = ?)
-			UNION 
+			UNION ALL
 			(SELECT id, content, date_created, username, 0 as type
 			 FROM guest_comments 
 			 WHERE post_id = ?)			
-			ORDER BY date_created DESC");
-		$statement->bind_param("ii", $id, $id);
+			ORDER BY date_created DESC LIMIT ?, ?");
+		$statement->bind_param("iiii", $id, $id, $offset, $pageSize);
 		$statement->execute();
 		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
 		return $result;
 	}
 
-	public function getAllComments($page = 1, $pageSize = DEFAULT_PAGE_SIZE) {
+	public function getCommentsByPostIdPageCount($id, $pageSize = DEFAULT_PAGE_SIZE) {
+		$statement = self::$db->prepare(
+			"SELECT COUNT(a.id) FROM
+			((SELECT c.id
+			FROM user_comments AS c 
+			WHERE c.post_id = ?)
+			UNION ALL
+			(SELECT id
+			 FROM guest_comments 
+			 WHERE post_id = ?)) a");
+		$statement->bind_param("ii", $id, $id);
+		$statement->execute();
+        $result = $statement->get_result()->fetch_assoc()["COUNT(a.id)"];
+        return ceil($result / $pageSize);
+	}
+
+	public function getAllComments($page, $pageSize = DEFAULT_PAGE_SIZE) {
 		$page--;
+		$offset = $page * $pageSize;
 		$statement = self::$db->prepare(
 			"(SELECT c.id, c.content, c.date_created, u.username, 1 as type
 			FROM user_comments AS c 
 			JOIN users AS u ON c.author_id = u.id )
-			UNION 
+			UNION ALL
 			(SELECT id, content, date_created, username, 0 as type
 			 FROM guest_comments )			
 			ORDER BY date_created DESC LIMIT ?, ?");
-		$statement->bind_param("ii", $page, $pageSize);
+		$statement->bind_param("ii", $offset, $pageSize);
 		$statement->execute();
 		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
 		return $result;
+	}
+
+	public function getAllCommentsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
+		$statement = self::$db->query("SELECT COUNT(a.id) FROM 
+			((SELECT c.id FROM user_comments c)
+			UNION ALL
+			(SELECT t.id FROM guest_comments t)) a");
+        $result = $statement->fetch_assoc()["COUNT(a.id)"];
+        return ceil($result / $pageSize);
 	}
 
 	public function postGuestComment($id, $name, $email, $content) {

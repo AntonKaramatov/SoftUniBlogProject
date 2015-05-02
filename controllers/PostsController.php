@@ -9,11 +9,23 @@ class PostsController extends BaseController {
 	}
 
 	public function index() {
-		$this->posts = $this->postsModel->getPostsWithPreview();
+		$this->page = 1;
+		$this->requestUrl = "/posts";
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->postsModel->getPostsPageCount();
+		$this->posts = $this->postsModel->getPostsWithPreview($this->page);
 		$this->renderView();
 	}
 
 	public function view($id) {
+		$this->page = 1;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
 		$this->post = $this->postsModel->getPostById($id);
 		if($this->post == null) {
 			$this->addErrorMessage("Post not found.");
@@ -24,7 +36,14 @@ class PostsController extends BaseController {
 	}
 
 	public function getByTag($id) {
-		$this->posts = $this->postsModel->getPostsWithPreviewByTagId($id);
+		$this->page = 1;
+		$this->requestUrl = "/posts/getByTag/" . $id;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->postsModel->getPostsByTadIdPageCount($id);
+		$this->posts = $this->postsModel->getPostsWithPreviewByTagId($id, $this->page);
 		$this->renderView("index");
 	}
 
@@ -57,6 +76,11 @@ class PostsController extends BaseController {
 
 	public function edit($id) {
 		$this->authorizeAdmin();
+		$this->page = 1;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
 		if(!$this->isPost()) {
 			$this->post = $this->postsModel->getPostById($id);
 			if($this->post == null) {

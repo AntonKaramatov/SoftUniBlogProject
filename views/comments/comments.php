@@ -22,3 +22,5 @@
     </div>
     <br/>
 <?php endforeach; ?>
+
+<?php include_once("views/layouts/pagination.php");

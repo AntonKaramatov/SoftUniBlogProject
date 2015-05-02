@@ -10,7 +10,14 @@ class TagsController extends BaseController {
 
 	public function index() {
 		$this->authorizeAdmin();
-		$this->tags = $this->tagsModel->getTags();
+		$this->page = 1;
+		$this->requestUrl = "/tags";
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->tagsModel->getTagsPageCount();
+		$this->tags = $this->tagsModel->getTags($this->page);
 		$this->renderView();
 	}
 
@@ -27,8 +34,15 @@ class TagsController extends BaseController {
 	}
 
 	public function getAdd($id) {
+		$this->page = 1;
+		$this->requestUrl = "/posts/edit/" . $id;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		$this->pagesCount = $this->tagsModel->getTagsByPostIdPageCount($id);
 		$this->postId = $id;
-		$this->tags = $this->tagsModel->getAllTagsNotOnPost($id);
+		$this->tags = $this->tagsModel->getAllTagsNotOnPost($id, $this->page);
 		$this->renderView("tagsAdd", true);
 	}
 
