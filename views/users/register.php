@@ -1,5 +1,5 @@
 <label class="control-label" for="inputUsername">Register:</label>
-<form action="/users/register" method="POST">
+<form action="/users/register" class="form-horizontal" method="POST">
 	<div class="form-group">
 	    <label for="inputUsername" class="col-sm-4 control-label">Username</label>
 	    <div class="col-sm-8">

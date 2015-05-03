@@ -48,6 +48,32 @@ class PostsModel extends BaseModel {
         return ceil($result / $pageSize);
 	}
 
+	public function getSearchPostsWithPreview($searchTerm, $page, $pageSize = DEFAULT_PAGE_SIZE) {
+		$page--;
+		$offset = $page * $pageSize;
+		$searchTerm = "%" . $searchTerm . "%";
+		$statement = self::$db->prepare(
+			"SELECT p.id, p.title, SUBSTRING(content, 1, 500) as preview, p.date_created, p.visits_count, u.username
+			FROM posts AS p JOIN users AS u ON p.author_id = u.id 
+			WHERE title LIKE ? OR content LIKE ?
+			ORDER BY date_created DESC LIMIT ?, ?");
+		$statement->bind_param("ssii", $searchTerm, $searchTerm, $offset, $pageSize);
+		$statement->execute();
+		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		return $result;
+	}
+
+	public function getSearchPostsPageCount($searchTerm, $pageSize = DEFAULT_PAGE_SIZE) {
+		$searchTerm = "%" . $searchTerm . "%";
+		$statement = self::$db->prepare(
+			"SELECT COUNT(id) FROM posts
+			WHERE title LIKE ? OR content LIKE ?");
+		$statement->bind_param("ss", $searchTerm, $searchTerm);
+		$statement->execute();
+        $result = $statement->get_result()->fetch_assoc()["COUNT(id)"];
+        return ceil($result / $pageSize);
+	}
+
 	public function getPostsWithPreviewByTagId($id, $page, $pageSize = DEFAULT_PAGE_SIZE) {
 		$page--;		
 		$offset = $page * $pageSize;
@@ -65,7 +91,7 @@ class PostsModel extends BaseModel {
 
 	public function getPostsByTadIdPageCount($id, $pageSize = DEFAULT_PAGE_SIZE) {
 		$statement = self::$db->prepare(
-			"SELECT COUNT(p.id) FROM posts AS p JOIN users AS u ON p.author_id = u.id
+			"SELECT COUNT(p.id) FROM posts AS p
 			JOIN posts_tags AS pt ON p.id = pt.post_id
 			WHERE pt.tag_id = ?");
 		$statement->bind_param("i", $id);

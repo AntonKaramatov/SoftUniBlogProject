@@ -19,6 +19,23 @@ class PostsController extends BaseController {
 		$this->renderView();
 	}
 
+	public function search() {
+		$this->page = 1;
+		if(isset($_GET["page"]) && $_GET["page"] > 1) {
+			$this->page = $_GET["page"];
+		}
+
+		if(!isset($_GET["searchTerm"])) {
+			$this->redirectToUrl("/posts");
+		}
+
+		$this->searchTerm = $_GET["searchTerm"];
+		$this->pagesCount = $this->postsModel->getSearchPostsPageCount($this->searchTerm);
+		$this->posts = $this->postsModel->getSearchPostsWithPreview($this->searchTerm, $this->page);
+
+		$this->renderView("index");
+	}
+
 	public function view($id) {
 		$this->page = 1;
 		if(isset($_GET["page"]) && $_GET["page"] > 1) {

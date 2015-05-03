@@ -15,27 +15,37 @@
 
 <body>
     <header>
-        <div class="blog-masthead">
-            <div class="container">
-                <nav class="blog-nav">
-                    <a class="blog-nav-item" href="/">Home</a>           
-                    <a class="blog-nav-item" href="/posts">Posts</a>
-                    <?php if(!$this->isLoggedIn()):?>
-                        <a class="blog-nav-item" href="/users/login">Login</a>
-                        <a class="blog-nav-item" href="/users/register">Register</a>
-                    <?php endif;?>
-                    <?php if($this->isAdmin()):?>
-                        <a class="blog-nav-item" href="/posts/create">Create Post</a>
-                        <a class="blog-nav-item" href="/tags/create">Create Tag</a>
-                        <a class="blog-nav-item" href="/comments">View Comments</a>
-                        <a class="blog-nav-item" href="/tags">View Tags</a></li>
-                    <?php endif;?>
-                    <?php if($this->isLoggedIn()): ?>            
-                            <a class="blog-nav-item" href="/users/logout">Logout</a>
-                    <?php endif; ?>
-                </nav>
+        <nav class="navbar navbar-custom navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
             </div>
-        </div>
+            <div id="navbar" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a class="blog-nav-item" href="/">Home</a></li>           
+                <li><a class="blog-nav-item" href="/posts">Posts</a></li>
+                <?php if(!$this->isLoggedIn()):?>
+                    <li><a class="blog-nav-item" href="/users/login">Login</a></li>
+                    <li><a class="blog-nav-item" href="/users/register">Register</a></li>
+                <?php endif;?>
+                <?php if($this->isAdmin()):?>
+                    <li><a class="blog-nav-item" href="/posts/create">Create Post</a></li>
+                    <li><a class="blog-nav-item" href="/tags/create">Create Tag</a></li>
+                    <li><a class="blog-nav-item" href="/comments">View Comments</a></li>
+                    <li><a class="blog-nav-item" href="/tags">View Tags</a></li></li>
+                <?php endif;?>
+                <?php if($this->isLoggedIn()): ?>            
+                        <li><a class="blog-nav-item" href="/users/logout">Logout</a></li>
+                <?php endif; ?>
+              </ul>
+            </div>
+          </div>
+        </nav>
     </header>
     <div class="container">
         <?php include_once('views/layouts/messages.php'); ?>
