@@ -55,7 +55,8 @@ class TagsModel extends BaseModel {
 				WHERE pt.post_id = ?)");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc()["COUNT(t.id)"];
+		$result = $statement->get_result()->fetch_assoc();
+		$result = $result["COUNT(t.id)"];
 		return ceil($result / $pageSize);
 	}
 
@@ -73,7 +74,8 @@ class TagsModel extends BaseModel {
 
 	public function getTagsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
 		$statement = self::$db->query("SELECT COUNT(id) FROM tags");
-        $result = $statement->fetch_assoc()["COUNT(id)"];
+        $result = $statement->fetch_assoc();
+        $result = $result["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 

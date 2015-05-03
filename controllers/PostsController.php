@@ -163,7 +163,7 @@ class PostsController extends BaseController {
 			$this->addInfoMessage("Tag added successfully.");
 		}
 
-		$this->redirect("posts", "edit", [$postId]);
+		$this->redirect("posts", "edit", array($postId));
 	}
 
 	public function removeTag($postId, $tagId) {
@@ -176,6 +176,6 @@ class PostsController extends BaseController {
 			$this->addInfoMessage("Tag removed successfully.");
 		}
 
-		$this->redirect("posts", "edit", [$postId]);
+		$this->redirect("posts", "edit", array($postId));
 	}
 }

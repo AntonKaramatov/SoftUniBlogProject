@@ -59,7 +59,7 @@ abstract class BaseController {
 		die;
 	}
 
-	protected function redirect($controller = null, $action = null, $params = []) {
+	protected function redirect($controller = null, $action = null, $params = array()) {
 		if($controller == null) {
 			$controller = $this->controller;
 		}

@@ -32,7 +32,8 @@ class CommentsModel extends BaseModel {
 			 WHERE post_id = ?)) a");
 		$statement->bind_param("ii", $id, $id);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc()["COUNT(a.id)"];
+        $result = $statement->get_result()->fetch_assoc();
+        $result = $result["COUNT(a.id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -58,7 +59,8 @@ class CommentsModel extends BaseModel {
 			((SELECT c.id FROM user_comments c)
 			UNION ALL
 			(SELECT t.id FROM guest_comments t)) a");
-        $result = $statement->fetch_assoc()["COUNT(a.id)"];
+        $result = $statement->fetch_assoc();
+        $result = $result["COUNT(a.id)"];
         return ceil($result / $pageSize);
 	}
 

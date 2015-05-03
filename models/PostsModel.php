@@ -44,7 +44,8 @@ class PostsModel extends BaseModel {
 
 	public function getPostsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
 		$statement = self::$db->query("SELECT COUNT(id) FROM posts");
-        $result = $statement->fetch_assoc()["COUNT(id)"];
+        $result = $statement->fetch_assoc();
+        $result = $result["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -70,7 +71,8 @@ class PostsModel extends BaseModel {
 			WHERE title LIKE ? OR content LIKE ?");
 		$statement->bind_param("ss", $searchTerm, $searchTerm);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc()["COUNT(id)"];
+        $result = $statement->get_result()->fetch_assoc();
+        $result = $result["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -96,7 +98,8 @@ class PostsModel extends BaseModel {
 			WHERE pt.tag_id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc()["COUNT(p.id)"];
+        $result = $statement->get_result()->fetch_assoc();
+        $result = $result["COUNT(p.id)"];
         return ceil($result / $pageSize);
 	}
 

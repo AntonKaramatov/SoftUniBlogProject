@@ -10,7 +10,7 @@ function renderMessages($messagesKey, $cssClass) {
             echo "<div class='$cssClass'>" . htmlspecialchars($msg) . '</div>';
         }
     }
-    $_SESSION[$messagesKey] = [];
+    $_SESSION[$messagesKey] = array();
 }
 ?>
 
