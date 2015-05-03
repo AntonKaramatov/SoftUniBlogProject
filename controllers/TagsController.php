@@ -48,6 +48,10 @@ class TagsController extends BaseController {
 	public function create() {
 		$this->authorizeAdmin();
 		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+			
 			$this->tag = trim($_POST["tag"]);			
 			$result = $this->tagsModel->create($this->tag);
 			if($result != null) {
@@ -58,18 +62,29 @@ class TagsController extends BaseController {
 				$this->redirectToUrl("/tags");
 			}
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+
 		$this->renderView();
 	}
 
-	public function delete($id) {
+	public function delete() {
 		$this->authorizeAdmin();
-		$result = $this->tagsModel->delete($id);
-		if($result) {
-			$this->addInfoMessage("Tag deleted successfully.");
+		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
+			$id = $_POST["id"];
+			$result = $this->tagsModel->delete($id);
+			if($result) {
+				$this->addInfoMessage("Tag deleted successfully.");
+			}
+			else {
+				$this->addErrorMessage("Tag not found.");
+			}
 		}
-		else {
-			$this->addErrorMessage("Tag not found.");
-		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+
 		$this->redirectToUrl("/tags");
 	}
 
@@ -83,6 +98,10 @@ class TagsController extends BaseController {
 			}
 		}
 		else {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
 			$this->tag = array();
 			$this->tag["id"] = $id;
 			$this->tag["tag"] = trim($_POST["tag"]);
@@ -95,6 +114,8 @@ class TagsController extends BaseController {
 				$this->redirectToUrl("/tags");
 			}
 		}
+
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView();
 	}

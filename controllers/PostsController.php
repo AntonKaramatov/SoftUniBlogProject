@@ -76,6 +76,10 @@ class PostsController extends BaseController {
 	public function create() {
 		$this->authorizeAdmin();
 		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+			
 			$this->postTitle = trim($_POST["title"]);			
 			$this->postContent = trim($_POST["content"]);
 			$result = $this->postsModel->post($this->postTitle, $this->postContent);
@@ -87,6 +91,8 @@ class PostsController extends BaseController {
 				$this->redirectToUrl("/posts");
 			}
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+
 		$this->renderView();
 	}
 
@@ -105,6 +111,10 @@ class PostsController extends BaseController {
 			}
 		}
 		else {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
 			$this->post = array();
 			$this->post["id"] = $id;
 			$this->post["title"] = trim($_POST["title"]);			
@@ -118,19 +128,28 @@ class PostsController extends BaseController {
 				$this->redirectToUrl("/posts");
 			}
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView();
 	}
 
-	public function delete($id) {
+	public function delete() {
 		$this->authorizeAdmin();
-		$result = $this->postsModel->delete($id);
-		if($result) {
-			$this->addInfoMessage("Post deleted successfully.");
+		if($this->isPost()) {			
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
+			$id = $_POST["id"];
+			$result = $this->postsModel->delete($id);
+			if($result) {
+				$this->addInfoMessage("Post deleted successfully.");
+			}
+			else {
+				$this->addErrorMessage("Post not found.");
+			}
 		}
-		else {
-			$this->addErrorMessage("Post not found.");
-		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 		$this->redirectToUrl("/posts");
 	}
 

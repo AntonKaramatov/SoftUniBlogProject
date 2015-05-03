@@ -153,3 +153,6 @@ h6, .h6 {
   border-color:#428bca;
 }
 
+.delete-form {
+  display: inline-block;
+}

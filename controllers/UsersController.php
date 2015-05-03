@@ -22,6 +22,10 @@ class UsersController extends BaseController {
 		}
 
 		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+			
 			$this->username = $_POST["username"];
 			$this->password = $_POST["password"];
 			$this->repeatPassword = $_POST["repeatPassword"];
@@ -36,6 +40,8 @@ class UsersController extends BaseController {
 			}
 		}
 
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+
 		$this->renderView();
 	}
 
@@ -45,6 +51,10 @@ class UsersController extends BaseController {
 		}
 
 		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 			$result = $this->usersModel->login($username, $password);
@@ -56,6 +66,8 @@ class UsersController extends BaseController {
 				$this->redirectToUrl("/");
 			}
 		}
+
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView();
 	}

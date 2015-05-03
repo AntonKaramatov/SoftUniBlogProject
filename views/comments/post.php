@@ -1,6 +1,7 @@
 <div class="comment">
 	<label for="inputContent" class="control-label">Leave a comment:</label>
 	<form action="/comments/post/<?=$this->post['id']?>" method="POST">
+		<input type="hidden" name="requestToken" value="<?=$_SESSION['requestToken']?>">
 		<?php if(!$this->isLoggedIn()):?>
 			<div class="form-group">
 			    <label for="inputUsername" class="control-label">Name</label>

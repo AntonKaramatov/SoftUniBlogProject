@@ -1,5 +1,6 @@
 <label class="control-label" for="inputUsername">Register:</label>
 <form action="/users/register" class="form-horizontal" method="POST">
+<input type="hidden" name="requestToken" value="<?=$_SESSION['requestToken']?>">
 	<div class="form-group">
 	    <label for="inputUsername" class="col-sm-4 control-label">Username</label>
 	    <div class="col-sm-8">

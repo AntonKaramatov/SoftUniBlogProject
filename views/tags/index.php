@@ -4,7 +4,11 @@ All tags:<br/><br/>
 		<div class="col-md-4"><?= htmlspecialchars($tag['tag']) ?> </div>
 		<div class="col-md-8">
 			<a class="btn btn-sm btn-warning" href="/tags/edit/<?=$tag['id']?>">Edit</a>
-			<a class="delete btn btn-sm btn-danger" href="/tags/delete/<?=$tag['id']?>">Delete</a>
+			<form class="delete-form" action="/tags/delete" method="POST">
+				<input type="hidden" name="requestToken" value="<?=$_SESSION['requestToken']?>">
+				<input type="hidden" name="id" value="<?=$tag['id']?>">
+				<a class="delete btn btn-sm btn-danger">Delete</a>
+			</form>
 		</div>
 		<br/><br/>
 	<?php endforeach ?>

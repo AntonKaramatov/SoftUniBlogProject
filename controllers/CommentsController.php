@@ -14,6 +14,7 @@ class CommentsController extends BaseController{
 			$this->page = $_GET["page"];
 		}
 
+		$this->returnUrl = "/posts/view/" . $id; 
 		$this->pagesCount = $this->commentsModel->getCommentsByPostIdPageCount($id);
 		$this->comments = $this->commentsModel->getCommentsByPostId($id, $this->page);
 		$this->renderView("comments", true);
@@ -26,6 +27,7 @@ class CommentsController extends BaseController{
 			$this->page = $_GET["page"];
 		}
 
+		$this->returnUrl="/comments"; 
 		$this->pagesCount = $this->commentsModel->getAllCommentsPageCount();
 		$this->comments = $this->commentsModel->getAllComments($this->page);
 		$this->renderView("comments");
@@ -33,6 +35,10 @@ class CommentsController extends BaseController{
 
 	public function post($id){
 		if($this->isPost()) { 
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
 			$commentText = $_POST["comment_text"];
 			if($this->isLoggedIn()) {	
 				$result = $this->commentsModel->postUserComment($id, $commentText);
@@ -51,6 +57,7 @@ class CommentsController extends BaseController{
 
 			$this->redirect("posts", "view", [$id]);
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView("post", true);
 	}
@@ -65,6 +72,10 @@ class CommentsController extends BaseController{
 			}
 		}
 		else {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
 			$this->comment = array();
 			$this->comment["id"] = $id;		
 			$this->comment["content"] = trim($_POST["content"]);
@@ -77,20 +88,34 @@ class CommentsController extends BaseController{
 				$this->redirectToUrl("/comments");
 			}
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView();
 	}
 	
-	public function deleteUserComment($id) {
+	public function deleteUserComment() {
 		$this->authorizeAdmin();
-		$result = $this->commentsModel->deleteUserComment($id);
-		if($result) {
-			$this->addInfoMessage("Comment deleted successfully.");
+		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
+			$id = $_POST["id"];
+			$result = $this->commentsModel->deleteUserComment($id);
+			if($result) {
+				$this->addInfoMessage("Comment deleted successfully.");
+			}
+			else {
+				$this->addErrorMessage("Comment not found.");
+			}
 		}
-		else {
-			$this->addErrorMessage("Comment not found.");
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+		$returnUrl = "/comments";
+		if(isset($_POST["returnUrl"])) {
+			$returnUrl = $_POST["returnUrl"];
 		}
-		$this->redirectToUrl("/comments");
+
+		$this->redirectToUrl($returnUrl);
 	}
 
 	public function editGuestComment($id) {
@@ -103,6 +128,10 @@ class CommentsController extends BaseController{
 			}
 		}
 		else {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+			
 			$this->comment = array();
 			$this->comment["id"] = $id;
 			$this->comment["username"] = trim($_POST["username"]);			
@@ -117,19 +146,33 @@ class CommentsController extends BaseController{
 				$this->redirectToUrl("/comments");
 			}
 		}
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 
 		$this->renderView();
 	}
 
 	public function deleteGuestComment($id) {
 		$this->authorizeAdmin();
-		$result = $this->commentsModel->deleteGuestComment($id);
-		if($result) {
-			$this->addInfoMessage("Comment deleted successfully.");
+		if($this->isPost()) {
+			if(!isset($_POST["requestToken"]) || $_POST["requestToken"] != $_SESSION["requestToken"]) {
+				exit;
+			}
+
+			$id = $_POST["id"];
+			$result = $this->commentsModel->deleteGuestComment($id);
+			if($result) {
+				$this->addInfoMessage("Comment deleted successfully.");
+			}
+			else {
+				$this->addErrorMessage("Comment not found.");
+			}
 		}
-		else {
-			$this->addErrorMessage("Comment not found.");
+		$_SESSION["requestToken"] = hash('sha256', microtime());
+		$returnUrl = "/comments";
+		if(isset($_POST["returnUrl"])) {
+			$returnUrl = $_POST["returnUrl"];
 		}
-		$this->redirectToUrl("/comments");
+
+		$this->redirectToUrl($returnUrl);
 	}
 }

@@ -1,6 +1,7 @@
 <div>
 	<label for="inputUsername" class="control-label">Edit comment:</label>
 	<form action="/comments/editGuestComment/<?=$this->comment['id']?>" method="POST">
+		<input type="hidden" name="requestToken" value="<?=$_SESSION['requestToken']?>">
 		<div class="form-group">
 		    <label for="inputUsername" class="col-sm-2 control-label">Name</label>
 		    <div class="col-sm-10">

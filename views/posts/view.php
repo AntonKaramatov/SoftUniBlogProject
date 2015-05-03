@@ -7,7 +7,11 @@
 	<input id="page" type="hidden" value="<?=$this->page?>">
 	<?php if($this->isAdmin()) :?>
         <a class="btn btn-warning" href="/posts/edit/<?=$this->post['id']?>">Edit Post</a>
-        <a class="btn btn-danger" href="/posts/delete/<?=$this->post['id']?>">Delete Post</a>
+        <form class="delete-form" action="/posts/delete" method="POST">
+			<input type="hidden" name="requestToken" value="<?=$_SESSION['requestToken']?>">
+			<input type="hidden" name="id" value="<?=$this->post['id']?>">
+			<a class="delete btn btn-danger">Delete Post</a>
+		</form>
     <?php endif;?>
 </div>
 
