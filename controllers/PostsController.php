@@ -48,6 +48,7 @@ class PostsController extends BaseController {
 			$this->redirectToUrl("/posts");
 		}
 		$this->postsModel->increaseViews($id);
+		$_SESSION["requestToken"] = hash('sha256', microtime());
 		$this->renderView();
 	}
 
