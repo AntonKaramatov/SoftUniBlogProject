@@ -55,7 +55,7 @@ class CommentsController extends BaseController{
 				$this->addInfoMessage("Comment posted successfully.");
 			}
 
-			$this->redirect("posts", "view", [$id]);
+			$this->redirect("posts", "view", array($id));
 		}
 		$_SESSION["requestToken"] = hash('sha256', microtime());
 

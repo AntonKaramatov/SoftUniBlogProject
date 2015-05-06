@@ -7,7 +7,7 @@ class PostsModel extends BaseModel {
 			FROM posts AS p JOIN users AS u ON p.author_id = u.id WHERE p.id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		if(count($result) < 1) {
 			return null;
 		}
@@ -18,14 +18,14 @@ class PostsModel extends BaseModel {
 	public function getRecentPostTitles() {
 		$statement = self::$db->prepare("SELECT id, title FROM posts ORDER BY date_created DESC LIMIT 5");
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
 	public function getPopularPostTitles() {
 		$statement = self::$db->prepare("SELECT id, title FROM posts ORDER BY visits_count DESC LIMIT 5");
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -38,14 +38,14 @@ class PostsModel extends BaseModel {
 			ORDER BY date_created DESC LIMIT ?, ?");
 		$statement->bind_param("ii", $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
 	public function getPostsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
 		$statement = self::$db->query("SELECT COUNT(id) FROM posts");
-        $result = $statement->fetch_assoc();
-        $result = $result["COUNT(id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -60,7 +60,7 @@ class PostsModel extends BaseModel {
 			ORDER BY date_created DESC LIMIT ?, ?");
 		$statement->bind_param("ssii", $searchTerm, $searchTerm, $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -71,8 +71,8 @@ class PostsModel extends BaseModel {
 			WHERE title LIKE ? OR content LIKE ?");
 		$statement->bind_param("ss", $searchTerm, $searchTerm);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc();
-        $result = $result["COUNT(id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -87,7 +87,7 @@ class PostsModel extends BaseModel {
 			ORDER BY date_created DESC LIMIT ?, ?");
 		$statement->bind_param("iii", $id, $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -98,8 +98,8 @@ class PostsModel extends BaseModel {
 			WHERE pt.tag_id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc();
-        $result = $result["COUNT(p.id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(p.id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -186,8 +186,8 @@ class PostsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(tag_id) FROM posts_tags WHERE post_id = ? AND tag_id = ?");
 		$statement->bind_param("ii", $postId, $tagId);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] != 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] != 0) {
 			return "The tag is alredy on the post.";
 		}	
 
@@ -203,15 +203,16 @@ class PostsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM posts WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		return !($result["COUNT(id)"] == 0);
+		$result = $this->fetch($statement);
+		return !($result[0]["COUNT(id)"] == 0);
 	}
 
 	public function tagExists($id) {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM tags WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		return !($result["COUNT(id)"] == 0);
+		$result = $this->fetch($statement);
+		return !($result[0]["COUNT(id)"] == 0);
 	}
 }
+

@@ -1,19 +1,24 @@
 <?php
 
 class UsersModel extends BaseModel {
+	function __construct() {
+		include_once("password.php");
+	   	parent::__construct();
+	}
+
 	public function login($username, $password) {
 		$statement = self::$db->prepare("SELECT id, username, password_hash, isAdmin FROM users WHERE username = ?");
 		$statement->bind_param("s", $username);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if(!password_verify($password, $result["password_hash"]))
+		$result = $this->fetch($statement);
+		if(!password_verify($password, $result[0]["password_hash"]))
 		{
 			return "Login failed.";
 		}
 
-		$_SESSION["userId"] = $result["id"];
+		$_SESSION["userId"] = $result[0]["id"];
 		$_SESSION["username"] = $username;
-		$_SESSION["isAdmin"] = $result["isAdmin"];
+		$_SESSION["isAdmin"] = $result[0]["isAdmin"];
 		return null;
 	}
 
@@ -65,8 +70,8 @@ class UsersModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM users WHERE username = ?");
 		$statement->bind_param("s", $username);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] != 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] != 0) {
 			return "Username already taken.";
 		}
 
@@ -98,8 +103,8 @@ class UsersModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM users WHERE email = ?");
 		$statement->bind_param("s", $email);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] != 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] != 0) {
 			return "Email already taken.";
 		}
 

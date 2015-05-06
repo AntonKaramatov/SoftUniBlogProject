@@ -52,4 +52,4 @@
     <div class="container">
         <?php include_once('views/layouts/messages.php'); ?>
         <div class="row">
-            <div class="col-sm-8 blog-main">
+            <div class="col-sm-7 blog-main">

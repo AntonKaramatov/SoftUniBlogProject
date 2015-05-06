@@ -1,5 +1,5 @@
 	</div>
-	<div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+	<div class="col-sm-4 col-sm-offset-1 blog-sidebar">
 		<?php include_once('views/layouts/searchBar.php'); ?>
         <?php include_once('views/layouts/popularPostsSidebar.php'); ?>
         <?php include_once('views/layouts/recentPostsSidebar.php'); ?>

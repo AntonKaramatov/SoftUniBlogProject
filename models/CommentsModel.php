@@ -16,7 +16,7 @@ class CommentsModel extends BaseModel {
 			ORDER BY date_created DESC LIMIT ?, ?");
 		$statement->bind_param("iiii", $id, $id, $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -32,8 +32,8 @@ class CommentsModel extends BaseModel {
 			 WHERE post_id = ?)) a");
 		$statement->bind_param("ii", $id, $id);
 		$statement->execute();
-        $result = $statement->get_result()->fetch_assoc();
-        $result = $result["COUNT(a.id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(a.id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -50,7 +50,7 @@ class CommentsModel extends BaseModel {
 			ORDER BY date_created DESC LIMIT ?, ?");
 		$statement->bind_param("ii", $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -59,8 +59,8 @@ class CommentsModel extends BaseModel {
 			((SELECT c.id FROM user_comments c)
 			UNION ALL
 			(SELECT t.id FROM guest_comments t)) a");
-        $result = $statement->fetch_assoc();
-        $result = $result["COUNT(a.id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(a.id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -123,7 +123,7 @@ class CommentsModel extends BaseModel {
 			FROM user_comments WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		if(count($result) < 1) {
 			return null;
 		}
@@ -137,7 +137,7 @@ class CommentsModel extends BaseModel {
 			FROM guest_comments WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		if(count($result) < 1) {
 			return null;
 		}
@@ -154,8 +154,8 @@ class CommentsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM user_comments WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();		
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] == 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] == 0) {
 			return "Comment not found.";
 		}
 
@@ -186,8 +186,8 @@ class CommentsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM guest_comments WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();		
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] == 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] == 0) {
 			return "Comment not found.";
 		}
 
@@ -218,8 +218,8 @@ class CommentsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM posts WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] == 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] == 0) {
 			return "Post not found.";
 		}
 

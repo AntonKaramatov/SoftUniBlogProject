@@ -7,7 +7,7 @@ class TagsModel extends BaseModel {
 			FROM tags WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		if(count($result) < 1) {
 			return null;
 		}
@@ -22,7 +22,7 @@ class TagsModel extends BaseModel {
 			WHERE pt.post_id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -40,7 +40,7 @@ class TagsModel extends BaseModel {
 			LIMIT ?, ?");
 		$statement->bind_param("iii", $id, $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -55,8 +55,8 @@ class TagsModel extends BaseModel {
 				WHERE pt.post_id = ?)");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		$result = $result["COUNT(t.id)"];
+		$result = $this->fetch($statement);
+		$result = $result[0]["COUNT(t.id)"];
 		return ceil($result / $pageSize);
 	}
 
@@ -68,14 +68,14 @@ class TagsModel extends BaseModel {
 			FROM tags LIMIT ?, ?");
 		$statement->bind_param("ii", $offset, $pageSize);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
 	public function getTagsPageCount($pageSize = DEFAULT_PAGE_SIZE) {
 		$statement = self::$db->query("SELECT COUNT(id) FROM tags");
-        $result = $statement->fetch_assoc();
-        $result = $result["COUNT(id)"];
+        $result = $this->fetch($statement);
+        $result = $result[0]["COUNT(id)"];
         return ceil($result / $pageSize);
 	}
 
@@ -84,7 +84,7 @@ class TagsModel extends BaseModel {
 			FROM tags AS t LEFT JOIN posts_tags AS pt ON t.id = pt.tag_id 
 			GROUP BY t.id ORDER BY count DESC LIMIT 5");
 		$statement->execute();
-		$result = $statement->get_result()->fetch_all(MYSQLI_ASSOC);
+		$result = $this->fetch($statement);
 		return $result;
 	}
 
@@ -110,8 +110,8 @@ class TagsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM tags WHERE id = ?");
 		$statement->bind_param("i", $id);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] == 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] == 0) {
 			return "Tag not found.";
 		}
 
@@ -140,8 +140,8 @@ class TagsModel extends BaseModel {
 		$statement = self::$db->prepare("SELECT COUNT(id) FROM tags WHERE tag = ?");
 		$statement->bind_param("s", $tag);
 		$statement->execute();
-		$result = $statement->get_result()->fetch_assoc();
-		if($result["COUNT(id)"] != 0) {
+		$result = $this->fetch($statement);
+		if($result[0]["COUNT(id)"] != 0) {
 			return "Tag already exists.";
 		}
 
