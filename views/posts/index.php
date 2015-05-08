@@ -6,7 +6,7 @@
         <a href="/posts/view/<?=$post['id']?>"><h3 class="blog-post-title"><?= htmlspecialchars($post['title']) ?></h3></a>
         <p class="blog-post-meta"><?= htmlspecialchars($post['date_created']) ?> by <b><?= htmlspecialchars($post['username']) ?></b></p>
         <div>
-        	<?= htmlspecialchars($post['preview']) . "..." ?>
+        	<?= nl2br(htmlspecialchars($post['preview'])) . "..." ?>
             <a href="/posts/view/<?=$post['id']?>">Continue reading</a>
         </div>
         <div id="tags_<?=$post['id']?>"></div>

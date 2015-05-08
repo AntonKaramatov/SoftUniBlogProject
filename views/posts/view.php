@@ -2,7 +2,7 @@
 <div class="blog-post">
 	<h3 class="blog-post-title"><?= htmlspecialchars($this->post["title"])?></h3>
 	<p class="blog-post-meta"><?= htmlspecialchars($this->post['date_created']) ?> by <b><?= htmlspecialchars($this->post['username']) ?></b></p>
-	<p><?= htmlspecialchars($this->post["content"])?></p>
+	<p><?= nl2br(htmlspecialchars($this->post["content"]))?></p>
 	<input id="postId" type="hidden" value="<?=$this->post['id']?>">
 	<input id="page" type="hidden" value="<?=$this->page?>">
 	<?php if($this->isAdmin()) :?>
